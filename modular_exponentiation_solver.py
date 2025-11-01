@@ -191,6 +191,112 @@ def x_to_x_mod(xs_without_mod, modulus_x):
     xs_mod = [x_without_mod % modulus_x for x_without_mod in xs_without_mod]
     # Modded x's
     return xs_mod
+
+# x = root^y mod modulus_x, returned the optimized way. 
+# ys a list of y
+# root is the chosen primitive root
+# modulus_x is in the question statement
+# xs_mod = y_to_x_mod(ys = [6, 17], root = 7, modulus_x = 23) == [4, 19]
+def y_to_x_mod(ys, root, modulus_x):
+    # This step is optimized compared to y_to_x. Mod each time raising a power is better. 
+    # (Don't calculate a huge number which then you mod separately.)
+    xs_mod = []
+    # each x = root ** each y
+    # for 6 in [6, 17]:
+    for y in ys:
+        x = 1
+        # root ** each y becomes two steps: (for in range(y))
+        # for _ in range(6) == do this 6 times
+        for _ in range(y):
+            # -- 1 --
+            # x *= 7 == 7
+            x *= root
+            # x %= 23 == 7
+            x %= modulus_xd
+            # -- 2 --
+            # x *= 7 == 49
+            # x %= 23 == 3
+            # -- 3 --
+            # x *= 7 == 21
+            # x %= 23 == 21
+            # -- 4 --
+            # x *= 7 == 147
+            # x %= 23 == 9
+            # -- 5 --
+            # x *= 7 == 63
+            # x %= 23 == 17
+            # -- 6 --
+            # x *= 7 == 119
+            # x %= 23 == 4
+        # each x is then appended to xs_mod. Order preserved. 
+        # xs_mod.append(4)
+        xs_mod.append(x)
+        # xs_mod == [4]
+    # for 17 in [6, 17]:
+        # x = 1
+        # root ** each y becomes two steps: (for in range(y))
+        # for _ in range(17) == do this 17 times
+        for _ in range(y):
+            # -- 1 --
+            # x *= 7 == 7
+            # x %= 23 == 7
+            # -- 2 --
+            # x *= 7 == 49
+            # x %= 23 == 3
+            # -- 3 --
+            # x *= 7 == 21
+            # x %= 23 == 21
+            # -- 4 --
+            # x *= 7 == 147
+            # x %= 23 == 9
+            # -- 5 --
+            # x *= 7 == 63
+            # x %= 23 == 17
+            # -- 6 --
+            # x *= 7 == 119
+            # x %= 23 == 4
+            # -- 7 --
+            # x *= 7 == 28
+            # x %= 23 == 5            
+            # -- 8 --
+            # x *= 7 == 35
+            # x %= 23 == 12
+            # -- 9 --
+            # x *= 7 == 84
+            # x %= 23 == 15          
+            # -- 10 --
+            # x *= 7 == 105
+            # x %= 23 == 13
+            # -- 11 --
+            # x *= 7 == 91
+            # x %= 23 == 22            
+            # -- 12 --
+            # x *= 7 == 154
+            # x %= 23 == 16
+            # -- 13 --
+            # x *= 7 == 112
+            # x %= 23 == 20                
+            # -- 14 --
+            # x *= 7 == 140
+            # x %= 23 == 2
+            # -- 15 --
+            # x *= 7 == 14
+            # x %= 23 == 14            
+            # -- 16 --
+            # x *= 7 == 98
+            # x %= 23 == 6
+            # -- 17 --
+            # x *= 7 == 42
+            # x %= 23 == 19             
+        # each x is then appended to xs_mod. Order preserved. 
+        # xs_mod.append(19)
+        # xs_mod == [4, 19]
+        
+    # Double for loop is better than large numbers.
+    # These are already modded each step. 
+
+    # xs_mod == [4, 19]
+    return xs_mod
 	
 # Having xs_mod, we print nicely. 
 # x mod modulus_x as requested. 
@@ -199,24 +305,24 @@ def print_solutions(xs_mod, modulus_x):
 	for x_mod in xs_mod:
 		print(f'{x_mod} mod {modulus_x}')
 
+# One complete run: 
+# x^4 = 3 mod 23
+# 7^4y = 7^2 mod 23 
+# mod x -> y
+# 4y = 2 mod 22
+# downstaring
+# 2y = 1 mod 11
+# gcd(2, 11) = 1
+# 6 is the inverse of 2 in mod 11
+# y = 6 mod 11
+# upstairing
+# y = 6, 17 mod 22
+# mod y -> x
+# x = 7^6, 7^17 mod 23
+# Simplify
+# x = 4, 19 mod 23
 
 def main():
-    # x^4 = 3 mod 23
-    # 7^4y = 7^2 mod 23 
-    # mod x -> y
-    # 4y = 2 mod 22
-    # downstaring
-    # 2y = 1 mod 11
-    # gcd(2, 11) = 1
-    # 6 is the inverse of 2 in mod 11
-    # y = 6 mod 11
-    # upstairing
-    # y = 6, 17 mod 22
-    # mod y -> x
-    # x = 7^6, 7^17 mod 23
-    # Simplify
-    # x = 4, 19 mod 23
-    
     problem_statement = input('Input your problem statement exactly in the format of x^a = b in Z/mZ; (Ex. x^4 = 3 in Z/23Z).  Regular expressions automatically match your numbers. Only support prime moduli between and include 3 to 29.')
     # All integers stored, already converted in parse()
     x_power, quotient, modulus_x = parse(problem_statement)
@@ -302,15 +408,19 @@ def main():
     # Base equality: 7^y = 7^6, 7^17 (mod 23)
     print(f'Base equality: {root}^y = {xs_exp_form_string} (mod {modulus_x})')
     
-    # xs = y_to_x([6, 17], 7) == [7 ** 6, 7 ** 17] == [117649, 232630513987207]
-    # TODO: Optimize by combining with the mod step to prevent overflowing (but little worry about this)
-    xs = y_to_x(ys, root)
-
-    # Simplify
-    # xs then to xs_mod, which fit inside 0 ≤ xs_mod ≤ modulus_x 
-    # x = 4, 19 mod 23
-    # xs_mod = x_to_x_mod([117649, 232630513987207], 23) == [4, 19]
-    xs_mod = x_to_x_mod(xs, modulus_x)
+    # xs_mod = y_to_x_mod([6, 17], 7, 23) == [4, 19]
+    xs_mod = y_to_x_mod(ys, root, modulus_x)
+    
+    # # For demonstration purpose: split into two steps (not optimum)
+    # # xs = y_to_x([6, 17], 7) == [7 ** 6, 7 ** 17] == [117649, 232630513987207]
+    # # TODO: Optimize by combining with the mod step to prevent overflowing (but little worry about this)
+    # xs = y_to_x(ys, root)
+    #
+    # # Simplify
+    # # xs then to xs_mod, which fit inside 0 ≤ xs_mod ≤ modulus_x
+    # # x = 4, 19 mod 23
+    # # xs_mod = x_to_x_mod([117649, 232630513987207], 23) == [4, 19]
+    # xs_mod = x_to_x_mod(xs, modulus_x)
     
     # Print solutions in the format of '{x_mod} mod {modulus_x}' 
     # like '7 mod 23'
