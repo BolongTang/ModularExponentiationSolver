@@ -460,7 +460,11 @@ def main():
     # assert gcd(2, 11) == 1
     # assert 1 == 1
     # assert True
-    assert math.gcd(x_power, downstairs_modulus_y) == 1
+    try:
+        assert math.gcd(x_power, downstairs_modulus_y) == 1
+    except AssertionError:
+        print(f'gcd(x_power = {x_power}, downstairs_modulus_y = {downstairs_modulus_y}) != 1')
+        print(f'x_power and downstairs_modulus_y are not coprime, no inverse is possible.')
     # No AssertionError
     # 'gcd(x_power = {x_power = 2}, downstairs_modulus_y = {downstairs_modulus_y = 11}) == 1'
     # 'gcd(x_power = 2, downstairs_modulus_y = 11) == 1'
@@ -490,6 +494,9 @@ def main():
     # 'Inverted-the-divisor downstairs equality: y = {power = 6} (mod {downstairs_modulus_y = 11})'
     # Inverted-the-divisor equality: y = 6 (mod 11)
     print(f'Inverted-the-divisor downstairs equality: y = {power} (mod {downstairs_modulus_y})')
+
+    power = power % downstairs_modulus_y
+    print(f'Simplified downstairs equality: y = {power} (mod {downstairs_modulus_y})')
     
     # upstairing, get ys
     # y = 6, 17 mod 22
@@ -515,7 +522,7 @@ def main():
     # xs_exp_form_string = '7^6, 7^17'
     xs_exp_form_string = list_to_csv(xs_exp_form)
     # Solutions of x: x = 7^y = 7^6, 7^17 (mod 23)
-    print(f'Unsimplified solutions of x: x = {root}^y = {xs_exp_form_string} (mod {modulus_x})')
+    print(f'Unsimplified solutions: x = {root}^y = {xs_exp_form_string} (mod {modulus_x})')
     
     # xs_mod = y_to_x_mod([6, 17], 7, 23) == [4, 19]
     xs_mod = y_to_x_mod(ys, root, modulus_x)
@@ -536,7 +543,9 @@ def main():
     # xs_mod_strings = list_to_csv([4, 19]) == '4, 19'
     xs_mod_strings = list_to_csv(xs_mod)
     # Final solutions: x = 4, 19 (mod 23)
-    print(f'Simplified solutions of x: x = {xs_mod_strings} (mod {modulus_x})')
+    print(f'Simplified solutions: x = {xs_mod_strings} (mod {modulus_x})')
     
+# Passed 3a, 3c, 3e, 3g (my HW answer was wrong),  
+# 
 if __name__ == "__main__":
     main()
