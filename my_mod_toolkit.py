@@ -18,4 +18,5 @@ prim_roots_table = {
 	29: [2, 3, 8, 10, 11, 14, 15, 18, 19, 21, 26, 27],
 	}
 
-print(prim_roots_table)
+if __name__ == "__main__":
+	print(prim_roots_table)
